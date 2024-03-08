@@ -1,15 +1,18 @@
 {
-  "name": "chess-srs-cli",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "chess.js": "^1.0.0-beta.7"
-  }
+	"name": "chess-srs-cli",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"chess-srs": "^1.0.1",
+		"chess.js": "^1.0.0-beta.7",
+		"readline": "^1.3.0"
+	}
 }
