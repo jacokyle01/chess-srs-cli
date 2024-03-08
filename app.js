@@ -1,6 +1,6 @@
-const readline = require("readline");
-const ChessSrs = require("./chess-srs/dist/main");
-const { Chess } = require("chess.js");
+import readline from "readline";
+import { Chess } from "chess.js";
+import { ChessSrs } from "chess-srs";
 
 const rl = readline.createInterface({
 	input: process.stdin,
