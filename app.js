@@ -1,61 +1,85 @@
 // import readline from "readline";
-// import { Chess } from "chess.js";
-// import { ChessSrs } from "chess-srs";
+import { Chess } from "chess.js";
+import { ChessSrs } from "chess-srs";
 // import { readlineSync } from "readline-sync";
-// const Chess = require("chess.js");
-// const ChessSrs = require("chess-srs");
-import prompt from 'syncprompt';
-const name = prompt("what is your name?");
-console.log(name);
+import prompt from "syncprompt";
 
-// const chessSrs = ChessSrs({ buckets: [1, 10, 100] });
+const banner = `
+╔═══╗╔╗              ╔═══╗       
+║╔═╗║║║              ║╔═╗║       
+║║ ╚╝║╚═╗╔══╗╔══╗╔══╗║╚══╗╔═╗╔══╗
+║║ ╔╗║╔╗║║╔╗║║══╣║══╣╚══╗║║╔╝║══╣
+║╚═╝║║║║║║║═╣╠══║╠══║║╚═╝║║║ ╠══║
+╚═══╝╚╝╚╝╚══╝╚══╝╚══╝╚═══╝╚╝ ╚══╝
+ChessSrs v1.0.5
+`;
+console.log(banner);
 
-// /*
-// 1. e4 e5 2. f4 exf4 (2... d5) 3. Nf3 (3. Bc4 Qh4+ (3... d5) 4. Kf1) (3. d4 Qh4+ 4. Ke2) 3... d6 { test } (3... g5) *
-// */
+const chessSrs = ChessSrs({ buckets: [1, 10, 100] });
+chessSrs.setMethod("learn");
 
-// rl.question("Enter a repertoire to start\n", (pgn) => {
-// 	// console.log(pgn);
-// 	chessSrs.addSubrepertoires(pgn, "white");
-// 	// rl.close();
-// 	rl.question("Select which repertoire to train. Ex. 0\n", (num) => {
-// 		// console.log(num);
-// 		chessSrs.load(0);
-// 		console.log("Enter commands to train your repertoire. Press h for help.\n");
-// 		rl.on("line", (char) => {
-// 			console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-// 			switch (char) {
-// 				case "h":
-// 					console.log("test");
-// 					break;
-// 				case "n": //add async function here to handle training
-// 					chessSrs.setMethod("learn");
-// 					handleTrain();
-// 				// chessSrs.next();
-// 				// console.log(chessSrs.path());
-// 				// // console.log(node.data.san);
-// 				// printBoard(chessSrs.path());
-// 			}
-// 		});
-// 	});
-// });
 
-// // // Listen for the close event to exit the program
-// rl.on("close", () => {
-// 	console.log("Goodbye!");
-// 	process.exit(0);
-// });
+const addSubrep = () => {
+	const pgn = prompt("Add subrepertoire");
+	chessSrs.addSubrepertoires(pgn, "white");
+};
 
-// //flag: show white's move?
-// const printBoard = (path, flag) => {
-// 	const chess = new Chess();
-// 	if (!flag) {
-// 		path.pop();
-// 	}
-// 	path.forEach((node) => chess.move(node.data.san));
-// 	console.log(chess.ascii());
-// };
+const next = () => {
+	console.log(chessSrs.state());
+	console.log(chessSrs.state().repertoire);
+	console.log(chessSrs.state().subrepertoire);
 
+	chessSrs.update();
+	if (!chessSrs.next()) {
+		console.log("No trainable positions found...");
+		return;
+	}
+	switch (chessSrs.state().method) {
+		case "recall":
+		case "learn":
+			printBoard(chessSrs.path(), true);
+			const move = chessSrs.path().at(-1).data.san;
+			const response = prompt(
+				"White plays " + move + " here. Type anything to continue."
+			);
+			chessSrs.succeed();
+	}
+};
+
+const select = () => {
+	const choice = prompt("Select a subrepertoire. Ex. 0");
+	chessSrs.load(choice);
+};
+
+const printBoard = (path, flag) => {
+	const chess = new Chess();
+	if (!flag) {
+		path.pop();
+	}
+	path.forEach((node) => chess.move(node.data.san));
+	console.log(chess.ascii());
+};
+
+const main = () => {
+	const action = prompt("Enter action...");
+	switch (action) {
+		case "next":
+			next();
+			break;
+		case "add":
+			addSubrep();
+			break;
+		case "select":
+			select();
+			break;
+		default:
+			console.log("Usage: next | add");
+	}
+};
+
+while (1) {
+	main();
+}
 // const handleTrain = () => {
 // 	if (!chessSrs.next()) return; //mutates + don't try to train if impossible
 // 	chessSrs.update();
@@ -108,12 +132,6 @@ console.log(name);
 // };
 
 // //TODO add color switch
-// const addSubrep = () => {
-// 	rl.question("Add subrepertoire\n", (pgn) => {
-// 		chessSrs.addSubrepertoires(pgn, "white");
-// 		main();
-// 	});
-// };
 
 // rl.on("line", () => {
 // 	rl.question("Enter action", (action) => {
