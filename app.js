@@ -4,6 +4,10 @@ import { ChessSrs } from "chess-srs";
 // import { readlineSync } from "readline-sync";
 import prompt from "syncprompt";
 
+/*
+1. e4 e5 2. f4 exf4 (2... d5) 3. Nf3 (3. Bc4 Qh4+ (3... d5) 4. Kf1) (3. d4 Qh4+ 4. Ke2) 3... d6 { test } (3... g5) *
+*/
+
 const banner = `
 ╔═══╗╔╗              ╔═══╗       
 ║╔═╗║║║              ║╔═╗║       
@@ -18,9 +22,8 @@ console.log(banner);
 const chessSrs = ChessSrs({ buckets: [1, 10, 100] });
 chessSrs.setMethod("learn");
 
-
 const addSubrep = () => {
-	const pgn = prompt("Add subrepertoire");
+	const pgn = prompt("Add subrepertoire\n");
 	chessSrs.addSubrepertoires(pgn, "white");
 };
 
@@ -39,17 +42,23 @@ const next = () => {
 		case "learn":
 			printBoard(chessSrs.path(), true);
 			const move = chessSrs.path().at(-1).data.san;
-			const response = prompt(
-				"White plays " + move + " here. Type anything to continue."
-			);
+			console.log("White plays " + move + " here.");
+			// const response = prompt(
+			// "White plays " + move + " here. Type anything to continue."
+			// );
 			chessSrs.succeed();
 	}
 };
 
 const select = () => {
-	const choice = prompt("Select a subrepertoire. Ex. 0");
+	const choice = prompt("Select a subrepertoire. Ex. 0\n");
 	chessSrs.load(choice);
 };
+
+const toggle = () => {
+	chessSrs.setMethod(chessSrs.state().method == "learn" ? "recall" : "learn");
+	console.log("Switched method to " + chessSrs.state().method);
+}
 
 const printBoard = (path, flag) => {
 	const chess = new Chess();
@@ -72,8 +81,11 @@ const main = () => {
 		case "select":
 			select();
 			break;
+		case "toggle":
+			toggle();
+			break;
 		default:
-			console.log("Usage: next | add");
+			console.log("Usage: next | add | select | toggle");
 	}
 };
 
