@@ -1,6 +1,7 @@
 # ChessSrs CLI
 
-This NodeJS CLI app implements a subset of the ChessSrs functionality described [here](https://github.com/jacokyle01/chess-srs)
+This NodeJS CLI app implements a subset of the ChessSrs functionality described [here](https://github.com/jacokyle01/chess-srs)\
+[Video link](https://www.youtube.com/watch?v=u5Fh52vWAws)
 
 # Features
 
