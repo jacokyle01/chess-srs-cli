@@ -28,10 +28,8 @@ const addSubrep = () => {
 };
 
 const next = () => {
-	console.log(chessSrs.state());
-	console.log(chessSrs.state().repertoire);
-	console.log(chessSrs.state().subrepertoire);
 
+	// chessSrs.update(chessSrs.state().time + 5);
 	chessSrs.update();
 	if (!chessSrs.next()) {
 		console.log("No trainable positions found...");
@@ -39,14 +37,33 @@ const next = () => {
 	}
 	switch (chessSrs.state().method) {
 		case "recall":
+			printBoard(chessSrs.path(), false);
+			const guess = prompt("What does white play here?");
+			const outcome = chessSrs.guess(guess);
+			switch (outcome) {
+				case "success":
+					console.log(guess + " was correct! Good job.");
+					chessSrs.succeed();
+					break;
+				case "alternate":
+					console.log("Alternate move accepted.");
+					chessSrs.succeed();
+					break;
+				case "failure":
+					console.log(chessSrs.path());
+					console.log(
+						"Incorrect. Correct was " + chessSrs.path().at(-1).data.san
+					);
+					chessSrs.fail();
+					break;
+			}
+			break;
 		case "learn":
 			printBoard(chessSrs.path(), true);
 			const move = chessSrs.path().at(-1).data.san;
 			console.log("White plays " + move + " here.");
-			// const response = prompt(
-			// "White plays " + move + " here. Type anything to continue."
-			// );
 			chessSrs.succeed();
+			break;
 	}
 };
 
@@ -58,19 +75,24 @@ const select = () => {
 const toggle = () => {
 	chessSrs.setMethod(chessSrs.state().method == "learn" ? "recall" : "learn");
 	console.log("Switched method to " + chessSrs.state().method);
-}
+};
 
+//flag = true, show final position
+//flag = false, show opponent's last move
 const printBoard = (path, flag) => {
 	const chess = new Chess();
+	let newPath;
 	if (!flag) {
-		path.pop();
+		newPath = path.slice(0, path.length - 1);
+	} else {
+		newPath = path;
 	}
-	path.forEach((node) => chess.move(node.data.san));
+	newPath.forEach((node) => chess.move(node.data.san));
 	console.log(chess.ascii());
 };
 
 const main = () => {
-	const action = prompt("Enter action...");
+	const action = prompt("Enter action...\n");
 	switch (action) {
 		case "next":
 			next();
