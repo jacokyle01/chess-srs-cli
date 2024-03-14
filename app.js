@@ -28,7 +28,6 @@ const addSubrep = () => {
 };
 
 const next = () => {
-
 	// chessSrs.update(chessSrs.state().time + 5);
 	chessSrs.update();
 	if (!chessSrs.next()) {
@@ -38,7 +37,7 @@ const next = () => {
 	switch (chessSrs.state().method) {
 		case "recall":
 			printBoard(chessSrs.path(), false);
-			const guess = prompt("What does white play here?");
+			const guess = prompt("What does white play here?\n");
 			const outcome = chessSrs.guess(guess);
 			switch (outcome) {
 				case "success":
@@ -50,7 +49,6 @@ const next = () => {
 					chessSrs.succeed();
 					break;
 				case "failure":
-					console.log(chessSrs.path());
 					console.log(
 						"Incorrect. Correct was " + chessSrs.path().at(-1).data.san
 					);
